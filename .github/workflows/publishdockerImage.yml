@@ -36,4 +36,4 @@ jobs:
         with:
           context: ./app
           push: true
-          tags: user/app:latest
+          tags: 15478934/githubactionspush:gghh
