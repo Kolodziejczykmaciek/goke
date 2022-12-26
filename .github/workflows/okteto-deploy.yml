@@ -1,0 +1,42 @@
+on:
+  workflow_dispatch:
+    branches:
+      - main
+  push:
+    branches:
+      - main
+
+name: okteto-deploy
+
+jobs:
+  deploy:
+    environment: okteto
+    runs-on: ubuntu-latest
+    steps:
+    - name: checkout
+      uses: actions/checkout@master
+
+    - name: context
+      uses: okteto/context@latest
+      with:
+        token: ${{ secrets.OKTETO_TOKEN }}
+
+    - name: "Create namespace"
+      uses: okteto/create-namespace@latest
+      with:
+        namespace: goke-krzwiatrzyk
+        # members: rberrelleza,pchico83
+
+    - name: "Activate Namespace"
+      uses: okteto/namespace@latest
+      with:
+        namespace: goke-krzwiatrzyk
+
+    - name: "Trigger the pipeline"
+      uses: okteto/pipeline@latest
+      with:
+        filename: deploy/okteto/pipeline.yaml
+        name: main
+        timeout: 5m
+        skipIfExists: false
+        # variables: "DB_HOST=mysql,CONFIG_PATH=/tmp/config.yaml"

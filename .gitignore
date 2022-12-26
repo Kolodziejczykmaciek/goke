@@ -1,2 +1,5 @@
 .vscode
 .vendir-tmp
+.devbox
+app/goke
+.task

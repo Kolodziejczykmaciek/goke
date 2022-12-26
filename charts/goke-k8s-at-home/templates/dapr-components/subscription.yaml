@@ -1,0 +1,13 @@
+{{ if .Values.extensions.dapr }}
+apiVersion: dapr.io/v1alpha1
+kind: Subscription
+metadata:
+  name: queue
+spec:
+  topic: goke
+  route: /queue/subscribe
+  pubsubname: queue
+# scopes:
+# - orderprocessing
+# - checkout
+{{ end }}

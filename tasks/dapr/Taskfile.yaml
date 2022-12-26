@@ -1,0 +1,20 @@
+version: 3
+
+tasks:
+  install:
+    cmds:
+    - wget -q https://raw.githubusercontent.com/dapr/cli/master/install/install.sh -O - | /bin/bash
+    status:
+    - command -v dapr
+
+  local: 
+    deps:
+    - install
+    cmds:
+    - dapr init
+    status:
+    - docker ps | grep dapr
+  
+  local:dashboard: dapr dashboard
+  local:zipkin: firefox http://localhost:9411/zipkin/ 
+

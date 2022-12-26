@@ -1,6 +1,0 @@
-services:
-  goke:
-    image: goke
-    container_name: goke
-    expose:
-    - 3000

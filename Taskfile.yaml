@@ -1,14 +1,34 @@
 version: 3
 
 includes:
-  tools: modules/tools.yaml
+  deploy: deploy/Taskfile.yaml
+  git: tasks/git.yaml
+  dev: tasks/dev.yaml
+  tools: tasks/tools.yaml
+  app: 
+    taskfile: app/Taskfile.yaml
+    dir: app
   k3d:
     taskfile: vendir/k3d/Taskfile.yaml
     dir: vendir/k3d
+    vars:
+      CLUSTER_NAME: goke
+  tests:
+    dir: tests 
+    taskfile: tests/Taskfile.yaml
 
 tasks:
-  dev:
+  default: 
+  - task -a | grep "{{ .CLI_ARGS }}"
+
+  dev:helm:
   - task: k3d:create
+  - task: tilt:start:helm
+  - defer: 
+      task: k3d:delete
+
+  dev:compose:
+  - task: tilt:start:compose
 
   gum:install:
   - |
@@ -27,61 +47,8 @@ tasks:
     --foreground 212 --border-foreground 212 --border double
     --align center --width 50 --margin "1 2" --padding "2 4"
 
-  go:init:
-    dir: app
-    cmds:
-    - go mod init goke
 
-  go:env:
-    dir: app
-    cmds:
-    - go env
-
-  go:requirements:
-    dir: app
-    cmds:
-    - go mod tidy
-
-  app:install:
-    dir: app
-    cmds:
-    - go install
-
-  app:run:local:
-    dir: app
-    cmds:
-    - go run main.go
-
-  go:delete-downlaoded-modules:
-  - go clean -modcache
-
-  pre-commit:install:
-  - pip install pre-commit
-
-  pre-commit:install-hooks:
-  - pre-commit install
-  - pre-commit install -t commit-msg
-
-  pre-commit:run-hooks:
-  - pre-commit run --all-files
-
-  git:commit:
-    vars:
-      TYPE:
-        sh: gum choose feat fix docs
-      SCOPE:
-        sh: gum input --placeholder "Scope"
-      MESSAGE:
-        sh: gum input --placeholder "Message"
-    cmds:
-    - git add .
-    - >
-      git commit -m "{{ .TYPE }}({{ .SCOPE }}): {{ .MESSAGE }}"
-    - git push origin main
-
-  git:fix:
-  - find .git/objects/ -size 0 -exec rm -f {} \;
-  - git fetch origin
 
   sync:
   - vendir sync
+

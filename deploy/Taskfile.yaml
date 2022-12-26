@@ -1,0 +1,12 @@
+version: 3
+
+includes:
+  okteto:
+    dir: okteto
+    taskfile: okteto/Taskfile.yaml
+  tilt:
+    dir: tilt
+    taskfile: tilt/Taskfile.yaml
+  acorn:
+    dir: acorn 
+    taskfile: acorn/Taskfile.yaml

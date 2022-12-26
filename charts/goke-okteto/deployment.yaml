@@ -1,0 +1,29 @@
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: goke
+  labels:
+    app: goke
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: goke
+  template:
+    metadata:
+      labels:
+        app: goke
+    spec:
+      containers:
+      - name: goke
+        image: okteto.dev/goke:${OKTETO_GIT_COMMIT} # ${OKTETO_BUILD_GOKE_IMAGE}
+        ports:
+        - containerPort: 3000
+        command:
+          - /app/goke
+        args:
+        - run
+        - -m
+        - gin
